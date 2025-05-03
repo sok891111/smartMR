@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<style>
+html{
+    background: white;
+    padding: 50px;
+}
+</style>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .title { text-align: center; font-size: 50px; font-weight: bold; margin-bottom: 20px; text-decoration: underline;}
+        .info-container { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .info-box { width: 30%; text-align: center;  }
+        .info-box-right { width: 50%; text-align: center;  }
+        .info-box h3 { margin-top: 25px; font-size: 16px; padding-bottom: 5px; }
+        .info-box p { margin: 5px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+        td {
+            border: 2px solid black;
+            padding: 10px;
+            text-align: center;
+            
+            font-size: 14px;
+        }
+        .label {
+            width: 20%;
+            font-weight: bold;
+            background-color: #f4a460; 
+        }
+        .value {
+            width: 30%;
+        }
+        .highlight {
+            /* "대표자"와 "업종"의 배경색 */
+        }
+        th {  }
+        .footer { display: flex; justify-content: space-between; border-top: 1px solid #000; padding-top: 10px; }
+        .footer div { width: 30%; text-align: center; }
+        .vertical-text {
+      text-align: center; /* 가운데 정렬 */
+         font-weight: bold;
+            background-color: #f4a460; 
+    }
+
+table {
+      border-collapse: collapse; /* 테두리 겹치기 */
+      border: 2px solid black; /* 외곽 테두리: 진하게 */
+    }
+    th, td {
+      border: 1px solid #ccc; /* 내부 테두리: 연하게 (#ccc는 연한 회색) */
+      padding: 10px; /* 셀 내부 여백 */
+    }
+    /* 외곽 테두리와 내부 테두리가 겹치는 부분에서 외곽이 우선시되도록 */
+    table th:first-child, table td:first-child {
+      border-left: 1px solid #ccc;
+    }
+    table th:last-child, table td:last-child {
+      border-right: 1px solid #ccc;
+    }
+    table tr:first-child th, table tr:first-child td {
+      border-top: 1px solid #ccc;
+    }
+    table tr:last-child th, table tr:last-child td {
+      border-bottom: 1px solid #ccc;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="title">&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;서&nbsp;&nbsp;</div>
+    <div class="info-container">
+        
+        <div class="info-box" style="width:20%;margin-left:30px;">
+            <table>
+                <tr>
+                    <td class="label">견적서</td>
+                    <td class="value" >주식회사 바엘비</td>
+                </tr>
+                <tr>
+                    <td class="label">발주일자</td>
+                    <td class="value" >2025년 5월 3일</td>
+                </tr>
+                <tr>
+                    <td colspan=2></td>
+                </tr>
+            </table>
+            <div class="info-box" style="width: 100%; text-align: left;">
+                <h3>아래와 같이 발주합니다</h3>
+            </div>
+        </div>
+        <div class="info-box-right">
+            <table>
+                <tr>
+                    <td class="vertical-text" colspan=4 rowspan=5>공<br/><br/>급<br/><br/>자<br/></td>
+                    
+                </tr>
+                <tr>
+                    <td class="label">등록번호</td>
+                    <td class="value" colspan=3>159-86-02338</td>
+                </tr>
+                <tr>
+                    <td class="label">상 호</td>
+                    <td class="value" >주식회사 쿠퍼스테이션</td>
+                    <td class="label">대표자</td>
+                    <td class="value">천은경</td>
+                </tr>
+                <tr>
+                    <td class="label">주 소</td>
+                    <td class="value" colspan=3>서울시 강남구 강남대로152길 14 5층 506호</td>
+                </tr>
+                <tr>
+                    <td class="label">업 태</td>
+                    <td class="value" >도매 및 소매업</td>
+                    <td class="label">업 종</td>
+                    <td class="value">화장품</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="mr_body">
+    <table>
+        <thead>
+            <tr>
+                <th>품 명</th>
+                <th>수량</th>
+                <th>공급가액</th>
+                <th>부가세</th>
+                <th>합계</th>
+                <th>비고</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td anni></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="info-box" style="width: 100%; text-align: right;">
+        <h3>합 계</h3><p>0</p>
+    </div>
+    <div class="footer">
+        <div><p>전화번호</p><p>010-9213-2746</p></div>
+        <div><p>FAX</p><p></p></div>
+        <div><p>담당자</p><p>강수진</p></div>
+    </div>
+</body>
+</html>

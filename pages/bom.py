@@ -3,8 +3,9 @@ import pandas as pd
 from menu import menu_with_redirect
 # import airtable
 from pyairtable import Api
+from datetime import datetime
 # Redirect to app.py if not logged in, otherwise show the navigation menu
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title='자재 발주 시스템(smartMR)')
 menu_with_redirect()
 
 
@@ -20,26 +21,59 @@ product_table ='tblreG6m3bTRYMeLy'
 component_table = 'tbl8uwQUhuWQMlJtf'
 usage_table_id = 'tbltPILlWV5S9Bshj'
 
+fixed_date = datetime(2025, 5, 3)
 
+# "YYYY년 MM월 DD일" 형식으로 포맷팅
+today = fixed_date.strftime("%Y년 %m월 %d일")
 
+# 커스텀 CSS로 중앙 스피닝 스타일 정의
+st.markdown(
+    """
+    <style>
+    .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3); /* 반투명 배경 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #3498db;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-
-
-
+@st.cache_data(ttl=600)  
 def get_product_list():
     api = Api(api_key)
     table = api.table(base_id ,product_table)
     result = table.all()
     return [r['fields'] for r in result]
 
-
+@st.cache_data(ttl=600)  
 def get_component_list():
     api = Api(api_key)
     table = api.table(base_id ,component_table)
     result = table.all()
     return [r['fields'] for r in result]    
 
-
+@st.cache_data(ttl=600)  
 def get_usage_list():
     api = Api(api_key)
     table = api.table(base_id ,usage_table_id)
@@ -52,19 +86,22 @@ def update_warning(show):
 if 'show_warning' not in st.session_state:
     st.session_state.show_warning = True
 
+spinner_placeholder = st.empty()
+with spinner_placeholder.container():
+    st.markdown('<div class="spinner-overlay"><div class="spinner"></div></div>', unsafe_allow_html=True)
+    product_list = get_product_list()
+    component_list = get_component_list()
+    component_usage_list = get_usage_list()
 
-product_list = get_product_list()
-component_list = get_component_list()
-component_usage_list = get_usage_list()
+    # left, right = st.columns((10, 20))
+    
 
-# left, right = st.columns((10, 20))
+    product_df = pd.DataFrame(product_list)
+    usage_df = pd.DataFrame(component_usage_list)
+    component_df = pd.DataFrame(component_list)
+spinner_placeholder.empty()
+
 st.title("자재소요량(MR)")
-
-
-product_df = pd.DataFrame(product_list)
-usage_df = pd.DataFrame(component_usage_list)
-component_df = pd.DataFrame(component_list)
-
 
 # 행 선택을 위한 multiselect
 options = [f"[{row['제품코드']}] {row['제품명']}" for _, row in product_df.iterrows()]
@@ -72,6 +109,7 @@ selected_product = st.multiselect("제품 선택" ,options, key="product_select"
 
 
 selected_codes = [opt.split(' ')[0].replace('[','').replace(']','').strip() for opt in selected_product]
+
 
 st.info("셀 편집 후 Enter 키를 누르거나 빈칸을 후 저장 버튼을 클릭하여 데이터를 반영합니다.")
 st.subheader("주문 수량 입력" ,divider='grey')
@@ -139,7 +177,7 @@ else:
 
     if sum(order_df['발주량']) == 0 :
     
-        st.warning("발주 수량을 입력하지 않았습니다. 수량을 입력하시면 다음 단계 작업이 진행됩니다.", icon="⚠️")
+        st.warning("발주량을 입력하지 않았습니다. 수량을 입력하시면 다음 단계 작업이 진행됩니다.", icon="⚠️")
     # st.dataframe(fina_df)
     else:
         company_list = order_df['업체코드'].drop_duplicates().to_list()
@@ -155,7 +193,7 @@ else:
                 <style>
                 html{{
                     background: white;
-                    padding: 50px;
+                  
                 }}
                 </style>
                 <head>
@@ -164,8 +202,8 @@ else:
                         body {{ font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }}
                         .title {{ text-align: center; font-size: 50px; font-weight: bold; margin-bottom: 20px; text-decoration: underline;}}
                         .info-container {{ display: flex; justify-content: space-between; margin-bottom: 20px; }}
-                        .info-box {{ width: 30%; text-align: center;  }}
-                        .info-box-right {{ width: 50%; text-align: center;  }}
+                        .info-box {{ text-align: center;  }}
+                        .info-box-right {{ text-align: center;  }}
                         .info-box h3 {{ margin-top: 25px; font-size: 16px; padding-bottom: 5px; }}
                         .info-box p {{ margin: 5px 0; }}
                         table {{
@@ -181,12 +219,12 @@ else:
                             font-size: 14px;
                         }}
                         .label {{
-                            width: 20%;
+                          
                             font-weight: bold;
                             background-color: #f4a460; 
                         }}
                         .value {{
-                            width: 30%;
+                            
                         }}
                         
                         .footer {{ display: flex; justify-content: space-between; border-top: 1px solid #000; padding-top: 10px; }}
@@ -206,7 +244,7 @@ else:
                     }}
                     .bom_body table th,
                     .bom_body table td {{
-                    height: 50px;
+                    height: 30px;
                       border: 1px solid #ccc; /* 내부 테두리: 연하게 (#ccc는 연한 회색) */
                       padding: 10px; /* 셀 내부 여백 */
                     }}
@@ -234,7 +272,7 @@ else:
                     <div class="title">&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;서&nbsp;&nbsp;</div>
                     <div class="info-container">
                         
-                        <div class="info-box" style="width:20%;margin-left:30px;">
+                        <div class="info-box" style="max-width:35%">
                             <table>
                                 <tr>
                                     <td class="label">견적서</td>
@@ -242,7 +280,7 @@ else:
                                 </tr>
                                 <tr>
                                     <td class="label">발주일자</td>
-                                    <td class="value" >2025년 5월 3일</td>
+                                    <td class="value" >{today}</td>
                                 </tr>
                                 <tr>
                                     <td colspan=2></td>
@@ -372,7 +410,25 @@ else:
                 # Streamlit에서 HTML 표시
                 st.components.v1.html(html_code, height=1200, scrolling=True)    
 
+                                # Streamlit에서 HTML 표시
+                js_code = f"""
+                <script>
+                function openPopup() {{
+                    var win = window.open('', 'Popup', 'width=800,height=600');
+                    win.document.write(`
+                        {html_code.replace('<body>','<body onload="window.print();"/>')}
+                    `);
 
+                    win.document.close();
+                }}
+                </script>
+                <button onclick="openPopup()" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px;">
+                    PDF 인쇄
+                </button>
+                """
+
+                # HTML 렌더링
+                st.components.v1.html(js_code, height=50)
 
 
 

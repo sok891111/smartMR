@@ -3,7 +3,7 @@ import pandas as pd
 from menu import menu_with_redirect
 # import airtable
 from pyairtable import Api
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title='자재 발주 시스템(smartMR)')
 # Redirect to app.py if not logged in, otherwise show the navigation menu
 menu_with_redirect()
 
@@ -47,20 +47,20 @@ usage_table_id = 'tbltPILlWV5S9Bshj'
 
 api = Api(api_key)
 
-@st.cache_data(ttl=1800)  
+@st.cache_data(ttl=1200)  
 def get_component_list():
     api = Api(api_key)
     table = api.table(base_id, 'tbl8uwQUhuWQMlJtf')
     return table.all()
 
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=1200)
 def get_product_list():
     api = Api(api_key)
     table = api.table(base_id, 'tblreG6m3bTRYMeLy')
     return table.all()
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=1200)
 def get_usage_list():
 	api = Api(api_key)
 	table = api.table(base_id ,usage_table_id)
@@ -75,7 +75,7 @@ product_list = get_product_list()
 # component_usage_list = get_usage_list()
 
 
-st.title("자재소요량")
+st.title("자재명세서")
 
 
 product = pd.DataFrame(r['fields'] for r in product_list)
@@ -85,12 +85,13 @@ component_usage = get_usage_list()
 
 # st.divider()  
 st.subheader("제품을 선택하세요." ,divider='grey')
+st.info("아래 상품 표에서 첫번째 컬럼을 클릭하여 상품을 선택해주세요.")
 event = st.dataframe(product , selection_mode='single-row',on_select="rerun" , hide_index=True,)
 
 select_product = event.selection.rows
 
 if len(select_product)> 0:
-	st.info("셀 편집 후 Enter 키를 누르거나 빈칸을 후 저장 버튼을 클릭하여 데이터를 반영합니다.")
+	st.info("셀 편집 후 Enter 키를 누르거나 빈칸을 추가한 후 저장 버튼을 클릭하여 데이터를 반영합니다. ( table over 시 우측상단에 표시되는 toolbar 를 통해 데이터 조작 가능 )")
 	col1,col2 = st.columns([2, 3])  # Create two columns: one for spacing, one for buttons
 	with col1:
 		product_code = product.iloc[select_product , 0 ].item()

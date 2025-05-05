@@ -3,10 +3,11 @@ import pandas as pd
 from menu import menu_with_redirect
 import airtable
 
-menu_with_redirect()
+
 import streamlit as st
 import pandas as pd
-
+st.set_page_config(layout="wide", page_title='자재 발주 시스템(smartMR)')
+menu_with_redirect()
 # 세션 상태 초기화
 if 'df_left' not in st.session_state:
     st.session_state.df_left = pd.DataFrame({
@@ -47,23 +48,22 @@ with col2:
     st.write("")  # 여백
     st.write("")  # 여백
     # 오른쪽으로 이동 버튼
-    if st.button("→", use_container_width=True):
-        if selected_left:
-            # 선택된 자재코드 추출
-            selected_codes = [opt.split(' ')[0] for opt in selected_left]
-            # 선택된 행을 오른쪽으로 이동
-            rows_to_move = st.session_state.df_left[
-                st.session_state.df_left['자재코드'].isin(selected_codes)
-            ].copy()
-            st.session_state.df_right = pd.concat([
-                st.session_state.df_right,
-                rows_to_move
-            ], ignore_index=True)
-            # 왼쪽에서 선택된 행 삭제
-            st.session_state.df_left = st.session_state.df_left[
-                ~st.session_state.df_left['자재코드'].isin(selected_codes)
-            ].reset_index(drop=True)
-            st.rerun()
+    if selected_left:
+        # 선택된 자재코드 추출
+        selected_codes = [opt.split(' ')[0] for opt in selected_left]
+        # 선택된 행을 오른쪽으로 이동
+        rows_to_move = st.session_state.df_left[
+            st.session_state.df_left['자재코드'].isin(selected_codes)
+        ].copy()
+        st.session_state.df_right = pd.concat([
+            st.session_state.df_right,
+            rows_to_move
+        ], ignore_index=True)
+        # 왼쪽에서 선택된 행 삭제
+        st.session_state.df_left = st.session_state.df_left[
+            ~st.session_state.df_left['자재코드'].isin(selected_codes)
+        ].reset_index(drop=True)
+        st.rerun()
 
     # 왼쪽으로 이동 버튼
     if st.button("←", use_container_width=True):
@@ -124,7 +124,6 @@ html_code = """
 <style>
 html{
     background: white;
-    padding: 50px;
 }
 </style>
 <head>
@@ -133,8 +132,8 @@ html{
         body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
         .title { text-align: center; font-size: 50px; font-weight: bold; margin-bottom: 20px; text-decoration: underline;}
         .info-container { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .info-box { width: 30%; text-align: center;  }
-        .info-box-right { width: 50%; text-align: center;  }
+        .info-box {  text-align: center;  }
+        .info-box-right { text-align: center;  }
         .info-box h3 { margin-top: 25px; font-size: 16px; padding-bottom: 5px; }
         .info-box p { margin: 5px 0; }
         table {
@@ -150,12 +149,12 @@ html{
             font-size: 14px;
         }
         .label {
-            width: 20%;
+            
             font-weight: bold;
             background-color: #f4a460; 
         }
         .value {
-            width: 30%;
+            
         }
         .highlight {
             /* "대표자"와 "업종"의 배경색 */
@@ -178,7 +177,7 @@ table {
     }
     .bom_body table th,
     .bom_body table td {
-    height: 50px;
+    height: 30px;
       border: 1px solid #ccc; /* 내부 테두리: 연하게 (#ccc는 연한 회색) */
       padding: 10px; /* 셀 내부 여백 */
     }
@@ -206,11 +205,11 @@ table {
     <div class="title">&nbsp;&nbsp;발&nbsp;&nbsp;&nbsp;주&nbsp;&nbsp;&nbsp;서&nbsp;&nbsp;</div>
     <div class="info-container">
         
-        <div class="info-box" style="width:20%;margin-left:30px;">
+        <div class="info-box" style="max-width:35%">
             <table>
                 <tr>
                     <td class="label">견적서</td>
-                    <td class="value" >주식회사 바엘비</td>
+                    <td class="value"  >(주)아이씨엠코리아(I.C.M Korea)</td>
                 </tr>
                 <tr>
                     <td class="label">발주일자</td>
@@ -223,6 +222,8 @@ table {
             <div class="info-box" style="width: 100%; text-align: left;">
                 <h3>아래와 같이 발주합니다</h3>
             </div>
+        </div>
+        <div class="info-box">
         </div>
         <div class="info-box-right">
             <table>
@@ -343,18 +344,22 @@ table {
 """
 
 # Streamlit에서 HTML 표시
-st.components.v1.html(html_code, height=1200, scrolling=True)    
+js_code = f"""
+<script>
+function openPopup() {{
+    var win = window.open('', 'Popup', 'width=800,height=600');
+    win.document.write(`
+        {html_code.replace('<body>','<body onload="window.print();"/>')}
+    `);
 
-from weasyprint import HTML
-import tempfile
-if st.button("PDF 생성 및 다운로드"):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
-        HTML(string=html_code).write_pdf(tmp_pdf.name)
-        tmp_pdf.seek(0)
-        st.success("PDF 생성 완료 ✅")
-        st.download_button(
-            label="⬇️ PDF 다운로드",
-            data=tmp_pdf.read(),
-            file_name="table_output.pdf",
-            mime="application/pdf"
-        )
+    win.document.close();
+}}
+</script>
+<button onclick="openPopup()" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 4px;">
+    PDF 인쇄
+</button>
+"""
+
+# HTML 렌더링
+st.components.v1.html(js_code, height=50)
+st.components.v1.html(html_code, height=1200, scrolling=True)    

@@ -3,7 +3,7 @@ import pandas as pd
 from menu import menu_with_redirect
 from pyairtable import Api
 # Redirect to app.py if not logged in, otherwise show the navigation menu
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title='자재 발주 시스템(smartMR)')
 menu_with_redirect()
 
 

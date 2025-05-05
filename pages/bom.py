@@ -407,8 +407,6 @@ else:
                 </html>
                 """
 
-                # Streamlit에서 HTML 표시
-                st.components.v1.html(html_code, height=1200, scrolling=True)    
 
                                 # Streamlit에서 HTML 표시
                 js_code = f"""
@@ -430,6 +428,8 @@ else:
                 # HTML 렌더링
                 st.components.v1.html(js_code, height=50)
 
+                # Streamlit에서 HTML 표시
+                st.components.v1.html(html_code, height=1200, scrolling=True)    
 
 
 

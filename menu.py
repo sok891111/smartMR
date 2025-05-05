@@ -43,6 +43,11 @@ def menu():
     .stDecoration{
         display:none !important;
     }
+      [class^="_profileContainer"] {
+        display: none !important;
+    }
+
+    
     
         </style>
         """,
